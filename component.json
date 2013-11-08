@@ -9,7 +9,7 @@
     "microtask"
   ],
   "scripts": [
-    "index.js",
+    "index.js"
   ],
   "license": "Apache2_0"
 }
