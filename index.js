@@ -4,16 +4,16 @@
 
     try {root = global} catch(e){ try {root = window} catch(e){} };
 
-    var defer, observer, tasks = [];
+    var defer, tasks = [];
     
     if(root.process && typeof root.process.nextTick === 'function') defer = root.process.nextTick;
     else if(root.vertx && typeof root.vertx.runOnLoop === 'function') defer = root.vertx.RunOnLoop;
     else if(root.vertx && typeof root.vertx.runOnContext === 'function') defer = root.vertx.runOnContext;
     else if(observer = root.MutationObserver || root.WebKitMutationObserver) {
-        defer = (function(document, observer, drain) {
-            var el = document.createElement('div');
-                new observer(drain).observe(el, { attributes: true });
-                return function() { el.setAttribute('x', 'y'); };
+        defer = (function(doc, obs, drain) {
+            var el = doc.createElement('div');
+            new obs(drain).observe(el, { attributes: true });
+            return function() { el.setAttribute('x', 'y'); };
         }(document, root.MutationObserver, microTask.drain));
     }
     else if(typeof root.setTimeout === 'function' && (root.ActiveXObject || !root.postMessage)) {
@@ -32,28 +32,24 @@
     microTask.drain = function(){ 
         var t = tasks;
         tasks = [];
-        
+
         for(var i = 0, l = t.length; i < l; i++) t[i]();
     }
 
-    microTask.insert = function(task,position){
-        position = position ? position : 0;
-        tasks.splice(position,0,task);
+    microTask.insert = function(t,p){
+        p = p ? p : 0;
+        tasks.splice(p,0,t);
     }
 
-    microTask.indexOf = function(task){ 
-        return tasks.indexOf(task);
-    } 
-
-    microTask.has = function(task){
-        return !(tasks.indexOf(task) < 0)
+    microTask.has = function(t){
+        return !(tasks.indexOf(t) < 0)
     }
 
-    microTask.cancel = function(task){
-        if(typeof task === 'function' && (task = tasks.indexOf(task)) < 0) return;
-        else if(task == undefined) { tasks = []; return; } 
+    microTask.cancel = function(t){
+        if(typeof t === 'function' && (t = tasks.indexOf(t)) < 0) return;
+        else if(t == undefined) { tasks = []; return; } 
 
-        return tasks.splice(task,1);
+        return tasks.splice(t,1);
     }
     
     if(module && module.exports) module.exports = microTask;
