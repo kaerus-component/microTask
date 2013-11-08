@@ -2,7 +2,7 @@
 (function(root){
     "use strict"
 
-    try {root = global} catch(e){}
+    try {root = global} catch(e){ try {root = window} catch(e){} };
 
     var defer, observer, tasks = [];
     
