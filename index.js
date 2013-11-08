@@ -48,7 +48,7 @@
     }
 
     microTask.cancel = function(task){
-        if(typeof task === 'function' && (task = tasks.indexOf(task)) == undefined) return;
+        if(typeof task === 'function' && (task = tasks.indexOf(task)) < 0) return;
         else if(task == undefined) { tasks = []; return; } 
 
         return tasks.splice(task,1);
