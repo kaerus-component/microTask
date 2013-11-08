@@ -1,0 +1,17 @@
+{
+  "name": "microTask",
+  "version": "0.1.0",
+  "description": "microTask",
+  "repo": "kaerus-component/microTask",
+  "dependencies": {
+  },
+  "keywords": [
+    "nextTick",
+    "setImmediate",
+    "microtask"
+  ],
+  "scripts": [
+    "index.js",
+  ],
+  "license": "Apache2_0"
+}

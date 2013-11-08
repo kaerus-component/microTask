@@ -1,0 +1,38 @@
+{
+  "name": "microTask",
+  "version": "0.1.0",
+  "description": "microTask",
+  "keywords": [
+    "nextTick",
+    "setImmediate",
+    "microtask"
+  ],
+  "author": { 
+    "name": "Kaerus",
+    "email": "contact@kaerus.com",
+    "web": "http://kaerus.com"
+  },
+  "contributors": [
+    "anders elo <anders@kaerus.com>"
+  ],
+  "dependencies":{
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "should": "*",
+    "mocha-phantomjs":"*"
+  },
+  "bugs": {
+    "url": "https://github.com/kaerus-component/microTask/issues"
+  },
+  "scripts": {
+    "test":"make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kaerus-component/microTask.git"
+  },
+  "main": "index.js",
+  "license": "APACHE2_0"
+}
