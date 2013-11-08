@@ -1,11 +1,11 @@
 
 (function(root){
-	"use strict"
+    "use strict"
 
-    try {root = global} catch(e){}
+    try {root = global} catch(e){}
 
     var defer, observer, tasks = [];
-   	
+    
     if(root.process && typeof root.process.nextTick === 'function') defer = root.process.nextTick;
     else if(root.vertx && typeof root.vertx.runOnLoop === 'function') defer = root.vertx.RunOnLoop;
     else if(root.vertx && typeof root.vertx.runOnContext === 'function') defer = root.vertx.runOnContext;
@@ -26,7 +26,7 @@
     } else throw new Error("No candidate for microTask defer()")
 
     function microTask(t){
-    	if(tasks.push(t) === 1) defer(microTask.drain);
+        if(tasks.push(t) === 1) defer(microTask.drain);
     }
 
     microTask.drain = function(){ 
@@ -53,8 +53,8 @@
 
         return tasks.splice(task,1);
     }
-   	
-  	if(module && module.exports) module.exports = microTask;
+    
+    if(module && module.exports) module.exports = microTask;
     else if(typeof define ==='function' && define.amd) define(microTask); 
     else root.microTask = microTask;
 }(this));
