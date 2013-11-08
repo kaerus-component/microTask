@@ -15,8 +15,6 @@
   "contributors": [
     "anders elo <anders@kaerus.com>"
   ],
-  "dependencies":{
-  },
   "devDependencies": {
     "mocha": "*",
     "chai": "*",

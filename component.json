@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "description": "microTask",
   "repo": "kaerus-component/microTask",
-  "dependencies": {
-  },
   "keywords": [
     "nextTick",
     "setImmediate",
