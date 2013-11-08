@@ -30,8 +30,10 @@
     }
 
     microTask.drain = function(){ 
-        for(var i = 0, l = tasks.length; i < l; i++) tasks[i]();
-        tasks = []; 
+        var t = tasks;
+        tasks = [];
+        
+        for(var i = 0, l = t.length; i < l; i++) t[i]();
     }
 
     microTask.insert = function(task,position){
