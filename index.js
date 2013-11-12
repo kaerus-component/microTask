@@ -4,19 +4,23 @@
 
     try {root = global} catch(e){ try {root = window} catch(e){} };
 
-    var defer, tasks = [];
+    var defer, deferred, observer, queue = [];
     
-    if(root.process && typeof root.process.nextTick === 'function') defer = root.process.nextTick;
-    else if(root.vertx && typeof root.vertx.runOnLoop === 'function') defer = root.vertx.RunOnLoop;
+    if(root.process && typeof root.process.nextTick === 'function'){
+        /* avoid buggy nodejs setImmediate */ 
+        if(root.setImmediate && root.process.versions.node.split('.')[1] > '10') defer = root.setImmediate;
+        else defer = root.process.nextTick;
+    } else if(root.vertx && typeof root.vertx.runOnLoop === 'function') defer = root.vertx.RunOnLoop;
     else if(root.vertx && typeof root.vertx.runOnContext === 'function') defer = root.vertx.runOnContext;
     else if(observer = root.MutationObserver || root.WebKitMutationObserver) {
-        defer = (function(doc, obs, drain) {
-            var el = doc.createElement('div');
-            new obs(drain).observe(el, { attributes: true });
-            return function() { el.setAttribute('x', 'y'); };
-        }(document, root.MutationObserver, microTask.drain));
+        defer = (function(document, observer, drain) {
+            var el = document.createElement('div');
+                new observer(drain).observe(el, { attributes: true });
+                return function() { el.setAttribute('x', 'y'); };
+        }(document, root.MutationObserver, drain));
     }
     else if(typeof root.setTimeout === 'function' && (root.ActiveXObject || !root.postMessage)) {
+        /* use setTimeout to avoid buggy IE MessageChannel */
         defer = function(f){ root.setTimeout(f,0); }
     }
     else if(root.MessageChannel && typeof root.MessageChannel === 'function') {
@@ -25,34 +29,29 @@
         defer = function (f){ fifo[fifo.length] = f; channel.port2.postMessage(0); };
     } else throw new Error("No candidate for microTask defer()")
 
-    function microTask(t){
-        if(tasks.push(t) === 1) defer(microTask.drain);
+    deferred = head;
+
+    function mikroTask(func,args){
+        deferred(func,args);
     }
 
-    microTask.drain = function(){ 
-        var t = tasks;
-        tasks = [];
-
-        for(var i = 0, l = t.length; i < l; i++) t[i]();
+    function head(func,args){
+        queue[queue.length] = [func,args]; 
+        deferred = tail;
+        defer(drain); 
     }
 
-    microTask.insert = function(t,p){
-        p = p ? p : 0;
-        tasks.splice(p,0,t);
+    function tail(func,args){
+        queue[queue.length] = [func,args];
     }
 
-    microTask.has = function(t){
-        return !(tasks.indexOf(t) < 0)
-    }
-
-    microTask.cancel = function(t){
-        if(typeof t === 'function' && (t = tasks.indexOf(t)) < 0) return;
-        else if(t == undefined) { tasks = []; return; } 
-
-        return tasks.splice(t,1);
+    function drain(){      
+        for(var i = 0; i < queue.length; i++){ queue[i][0].apply(null,queue[i][1]) }
+        deferred = head;
+        queue = [];
     }
     
-    if(module && module.exports) module.exports = microTask;
-    else if(typeof define ==='function' && define.amd) define(microTask); 
-    else root.microTask = microTask;
+    if(module && module.exports) module.exports = mikroTask;
+    else if(typeof define ==='function' && define.amd) define(mikroTask); 
+    else root.microTask = mikroTask;
 }(this));

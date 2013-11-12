@@ -1,12 +1,24 @@
 {
   "name": "microTask",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "microTask",
   "repo": "kaerus-component/microTask",
   "keywords": [
+    "microTask", 
     "nextTick",
     "setImmediate",
-    "microtask"
+    "setTimeout",
+    "mutationObserver",
+    "messageChannel",
+    "postMessage"
+  ],
+  "author": { 
+    "name": "Kaerus",
+    "email": "contact@kaerus.com",
+    "web": "http://kaerus.com"
+  },
+  "contributors": [
+    "anders elo <anders@kaerus.com>"
   ],
   "scripts": [
     "index.js"
