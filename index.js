@@ -17,7 +17,7 @@
             var el = document.createElement('div');
                 new observer(drain).observe(el, { attributes: true });
                 return function() { el.setAttribute('x', 'y'); };
-        }(document, root.MutationObserver, drain));
+        }(document, observer, drain));
     }
     else if(typeof root.setTimeout === 'function' && (root.ActiveXObject || !root.postMessage)) {
         /* use setTimeout to avoid buggy IE MessageChannel */
