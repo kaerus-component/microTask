@@ -27,7 +27,9 @@
         var fifo = [], channel = new root.MessageChannel();
         channel.port1.onmessage = function () { (fifo.shift())() };
         defer = function (f){ fifo[fifo.length] = f; channel.port2.postMessage(0); };
-    } else throw new Error("No candidate for microTask defer()")
+    } 
+    else if(typeof root.setTimeout === 'function') defer = function(f){ root.setTimeout(f,0); } 
+    else throw new Error("No candidate for microTask defer()")
 
     deferred = head;
 
