@@ -1,10 +1,10 @@
 {
-  "name": "microTask",
-  "version": "0.1.3",
-  "description": "microTask",
-  "repo": "kaerus-component/microTask",
+  "name": "microtask",
+  "version": "0.1.4",
+  "description": "microtask",
+  "repo": "kaerus-component/microtask",
   "keywords": [
-    "microTask", 
+    "microtask", 
     "nextTick",
     "setImmediate",
     "setTimeout",

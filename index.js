@@ -29,31 +29,31 @@
         defer = function (f){ fifo[fifo.length] = f; channel.port2.postMessage(0); };
     } 
     else if(typeof root.setTimeout === 'function') defer = function(f){ root.setTimeout(f,0); } 
-    else throw new Error("No candidate for microTask defer()")
+    else throw new Error("No candidate for microtask defer()")
 
     deferred = head;
 
-    function mikroTask(func,args){
-        deferred(func,args);
+    function microtask(func,args,context){
+        deferred(func,args,context);
     }
 
-    function head(func,args){
-        queue[queue.length] = [func,args]; 
+    function head(func,args,context){
+        queue[queue.length] = [func,args,context]; 
         deferred = tail;
         defer(drain); 
     }
 
-    function tail(func,args){
-        queue[queue.length] = [func,args];
+    function tail(func,args,context){
+        queue[queue.length] = [func,args,context];
     }
 
     function drain(){      
-        for(var i = 0; i < queue.length; i++){ queue[i][0].apply(null,queue[i][1]) }
+        for(var i = 0; i < queue.length; i++){ queue[i][0].apply(queue[i][2],queue[i][1]) }
         deferred = head;
         queue = [];
     }
     
-    if(module && module.exports) module.exports = mikroTask;
-    else if(typeof define ==='function' && define.amd) define(mikroTask); 
-    else root.microTask = mikroTask;
+    if(module && module.exports) module.exports = microtask;
+    else if(typeof define ==='function' && define.amd) define(microtask); 
+    else root.microtask = microtask;
 }(this));
