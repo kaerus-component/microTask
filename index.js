@@ -34,6 +34,7 @@
     deferred = head;
 
     function microtask(func,args,context){
+        assert(typeof func == 'function',"microtask: func argument is not a function!");
         deferred(func,args,context);
     }
 
@@ -47,8 +48,18 @@
         queue[queue.length] = [func,args,context];
     }
 
-    function drain(){      
-        for(var i = 0; i < queue.length; i++){ queue[i][0].apply(queue[i][2],queue[i][1]) }
+    function drain(){   
+        var q;
+        for(var i = 0; i < queue.length; i++){
+            q = queue[i];
+            try {
+                q[0].apply(q[2],q[1]);
+            } catch(e) {
+                defer(function() {
+                    throw e;
+                });
+            }
+        }
         deferred = head;
         queue = [];
     }
