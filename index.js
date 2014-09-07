@@ -34,7 +34,8 @@
     deferred = head;
 
     function microtask(func,args,context){
-        assert(typeof func == 'function',"microtask: func argument is not a function!");
+        if( typeof func !== 'function' ) throw new Error("microtask: func argument is not a function!");
+        
         deferred(func,args,context);
     }
 
