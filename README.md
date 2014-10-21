@@ -12,9 +12,9 @@ Defers a task to aid with asynchronous processing in a single threaded environme
 
   Execute task on next event loop / tick
 
-  * param Functiontask - the function to call
-  * param Arrayargs - array of arguments
-  * param Objectcontext - task context
+  * param Function task - the function to call
+  * param Array args - array of arguments
+  * param Object context - task context
 
   Example: 
 ```js
