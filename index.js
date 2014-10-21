@@ -32,6 +32,24 @@
 
     deferred = head;
 
+    /**
+     * Execute task on next event loop / tick 
+     *
+     * Example: 
+     *      function myTask(a,b,c){
+     *         console.log(a,b,c);
+     *      }
+     *      microtask(myTask,["hello","world","!"]);
+     *      // 
+     *      doSomethingElse();
+     *      // ...after next event tick ... => "Hello world!"
+     *
+     * @param {Function} task - the function to call
+     * @param {Array} args - array of arguments
+     * @param {Object} context - task context
+     * @throws {Error} - task error
+     * @api public
+     */
     function microtask(func,args,context){
 
         if( typeof func !== 'function' )
