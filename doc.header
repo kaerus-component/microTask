@@ -1,0 +1,8 @@
+[![Build Status](https://travis-ci.org/kaerus-component/microTask.png)](https://travis-ci.org/kaerus-component/microTask)
+
+# microTask - A best effort nextTick shim
+
+## Synopsis
+Defers a task to aid with asynchronous processing in a single threaded environment.
+
+
