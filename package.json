@@ -24,15 +24,13 @@
     "chai": "*",
     "should": "*",
     "component": "~0.9.0",
-    "phantomjs": "*",
     "karma": "*",
     "karma-mocha": "*",
     "karma-chai": "*",
     "karma-spec-reporter": "*",
     "karma-firefox-launcher": "*",
     "karma-chrome-launcher": "*",
-    "karma-safari-launcher": "*",
-    "karma-phantomjs-launcher": "*"
+    "karma-safari-launcher": "*"
  },
   "bugs": {
     "url": "https://github.com/kaerus-component/microTask/issues"
