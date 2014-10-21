@@ -1,40 +1,41 @@
+;(function(root){
+    "use strict";
 
-(function(root){
-    "use strict"
-
-    try {root = global} catch(e){ try {root = window} catch(e){} };
+    try {root = global;} catch(e){ try {root = window;} catch(e){} };
 
     var defer, deferred, observer, queue = [];
-    
+
+    // Find best candidate for deferring a task 
     if(root.process && typeof root.process.nextTick === 'function'){
-        /* avoid buggy nodejs setImmediate */ 
+        // avoid buggy nodejs setImmediate in v0.10.x 
         if(root.setImmediate && root.process.versions.node.split('.')[1] > '10') defer = root.setImmediate;
         else defer = root.process.nextTick;
     } else if(root.vertx && typeof root.vertx.runOnLoop === 'function') defer = root.vertx.RunOnLoop;
     else if(root.vertx && typeof root.vertx.runOnContext === 'function') defer = root.vertx.runOnContext;
-    else if(observer = root.MutationObserver || root.WebKitMutationObserver) {
+    else if((observer = root.MutationObserver || root.WebKitMutationObserver)) {
         defer = (function(document, observer, drain) {
             var el = document.createElement('div');
-                new observer(drain).observe(el, { attributes: true });
-                return function() { el.setAttribute('x', 'y'); };
+            new observer(drain).observe(el, { attributes: true });
+            return function() { el.setAttribute('x', 'y'); };
         }(document, observer, drain));
-    }
+    } // avoid buggy IE MessageChannel
     else if(typeof root.setTimeout === 'function' && (root.ActiveXObject || !root.postMessage)) {
-        /* use setTimeout to avoid buggy IE MessageChannel */
-        defer = function(f){ root.setTimeout(f,0); }
+        defer = function(f){ root.setTimeout(f,0); };
     }
     else if(root.MessageChannel && typeof root.MessageChannel === 'function') {
         var fifo = [], channel = new root.MessageChannel();
-        channel.port1.onmessage = function () { (fifo.shift())() };
+        channel.port1.onmessage = function () { (fifo.shift())(); };
         defer = function (f){ fifo[fifo.length] = f; channel.port2.postMessage(0); };
     } 
-    else if(typeof root.setTimeout === 'function') defer = function(f){ root.setTimeout(f,0); } 
-    else throw new Error("No candidate for microtask defer()")
+    else if(typeof root.setTimeout === 'function') defer = function(f){ root.setTimeout(f,0); }; 
+    else throw Error("no candidate for defer");
 
     deferred = head;
 
     function microtask(func,args,context){
-        if( typeof func !== 'function' ) throw new Error("microtask: func argument is not a function!");
+
+        if( typeof func !== 'function' )
+	    throw Error("not a function");
         
         deferred(func,args,context);
     }
@@ -51,6 +52,7 @@
 
     function drain(){   
         var q;
+
         for(var i = 0; i < queue.length; i++){
             q = queue[i];
             try {
