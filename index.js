@@ -31,9 +31,10 @@
     else if(typeof root.setTimeout === 'function') defer = function(f){ root.setTimeout(f,0); }; 
     else throw new Error("no candidate for defer");
 
-
-    function microtask(){
-        queue[queue.length] = [].slice.call(arguments);
+    var ql = 0;
+    
+    function microtask(func,args,ctx){
+        queue[ql++] = [func,args,ctx];
 	
 	defer(drain);
     }
@@ -41,12 +42,13 @@
     function drain(){   
         var q;
 
-        for(var i = 0; i < queue.length; i++){
+        for(var i = 0; i < ql; i++){
             q = queue[i];
  	    q[0].apply(q[2],q[1]);
         }
 	
         queue = [];
+	ql = 0;
     }
     
     if(module && module.exports) module.exports = microtask;
