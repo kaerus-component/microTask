@@ -4,7 +4,7 @@
 
     try {root = global;} catch(e){ try {root = window;} catch(e){} };
 
-    var defer, observer, queue = [];
+    var defer, observer;
     
     if(root.process && typeof root.process.nextTick === 'function'){
         /* avoid buggy nodejs setImmediate */ 
@@ -31,24 +31,29 @@
     else if(typeof root.setTimeout === 'function') defer = function(f){ root.setTimeout(f,0); }; 
     else throw new Error("no candidate for defer");
 
-    var ql = 0;
+    var queue = [], length = 0;
     
-    function microtask(func,args,ctx){
-        queue[ql++] = [func,args,ctx];
+    function microtask(func,args,ctx,err){
+	if(!length) defer(drain);
 	
-	defer(drain);
+        queue[length++] = [func,args,ctx,err];
     }
 
     function drain(){   
-        var q;
+        var q = queue, l = length;
 
-        for(var i = 0; i < ql; i++){
-            q = queue[i];
- 	    q[0].apply(q[2],q[1]);
-        }
+	queue = [];
+	length = 0;
 	
-        queue = [];
-	ql = 0;
+        for(var i = 0; i < l; i++){
+	    try {
+ 		q[i][0].apply(q[i][2],q[i][1]);
+	    } catch(err) {
+		if(typeof q[i][3] === 'function'){
+		    q[i][3](err);
+		} else throw err;
+	    }
+        }
     }
     
     if(module && module.exports) module.exports = microtask;
